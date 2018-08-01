@@ -10,7 +10,7 @@ def main():
 	
 	# Play the game
 	while True:
-		print("Options: %s." % game.move_names_str )
+		print("Options: %s." % game.move_names )
 		print("What is your move? ", end="")
 
 		human = get_human_move(game)
@@ -29,7 +29,7 @@ def get_human_move(game):
 
 	if not stdin or stdin in ("exit", "quit"):
 		return Admin_move(True)
-	elif stdin in ("help", "moves", "?"):
+	elif stdin in ("help", "moves", "rules", "?"):
 		print(game.rules)
 		return Admin_move(False)
 
@@ -69,6 +69,7 @@ class Move:
 		return " ".join((self.move, self.beats[enemy_move], enemy_move)) + "."
 
 class Admin_move:
+	"Like Move(), but not concerned with actually playing, but rather stuff like displaying help."
 	def __init__(self, quitting):
 		self.move = False
 		self.quitting = quitting
@@ -82,12 +83,14 @@ class Game:
 			moves = [row for row in rows if len(row)]
 
 		# Turn list of strings into list of Move objects
-		self.move_names = [item[0] for item in moves]
-		self.move_names_str = ", ".join(self.move_names)
-		self.move_objs = []
+		move_names = [item[0] for item in moves]
+		self.move_objs = list()
 		for i, move_info in enumerate(moves):
-			new = Move(i, len(moves), move_info, self.move_names)
+			new = Move(i, len(moves), move_info, move_names)
 			self.move_objs.append(new)
+
+		# Outside of this class, we'll need this list of moves stringified.
+		self.move_names = ", ".join(move_names)
 
 		# Build a string with game rules.
 		self.rules = "Rules of the game:\n"
