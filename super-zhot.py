@@ -7,7 +7,7 @@ generic_verb = 'beats'
 
 def main():
 	game = Game()
-	
+
 	# Play the game
 	while True:
 		print("Options: %s." % game.move_names )
