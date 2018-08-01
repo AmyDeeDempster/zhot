@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 import csv
 import random
+import sys
 
-move_fn = 'moves.csv'
 generic_verb = 'beats'
 
 def main():
-	game = Game()
+	try:
+		game = Game(sys.argv[1])
+	except:
+		print("Provide a CSV file of possible moves, as a command-line argument.")
+		exit()
 
 	# Play the game
 	while True:
@@ -75,10 +79,10 @@ class Admin_move:
 		self.quitting = quitting
 
 class Game:
-	def __init__(self):
+	def __init__(self, filename):
 		# Turn CSV into list of strings.
-		with open(move_fn) as move_fh:
-			rows = csv.reader(move_fh, delimiter=',', quotechar='"')
+		with open(filename) as filehandle:
+			rows = csv.reader(filehandle, delimiter=',', quotechar='"')
 			# Ignore blank lines.
 			moves = [row for row in rows if len(row)]
 
