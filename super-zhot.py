@@ -3,8 +3,6 @@ import csv
 import random
 import sys
 
-generic_verb = 'beats'
-
 def main():
 	try:
 		game = Game(sys.argv[1])
@@ -14,46 +12,62 @@ def main():
 
 	# Play the game
 	while True:
+		round = Round(game)
+		print(round.moves, end="")
+		print(round.outcome)
+		game.score['human'] += round.score['human']
+		game.score['ai']    += round.score['ai'] 
+
+	
+
+class Round:
+	"""Object that deals with a single round of the game""" 
+	def __init__(self, game):
 		print("Options: %s." % game.move_names )
 		print("What is your move? ", end="")
 
-		human = get_human_move(game)
+		# These return instances of Move() or Admin_move()
+		human = self.get_human_move(game)
 		ai    = random.choice(game.move_objs)
 		
 		# Check whether that was a real move, or perhaps a move to quit.
+		self.moves = str()
+		self.outcome = str()
+		self.score = dict(human=0, ai=0)
 		if human.move:
-			print("You play", human.move, "and I play", ai.move, end=". ")
-			print(round_results(human, ai))
+			self.moves += "You play " + human.move + " and I play " + ai.move + ". "
+			if human == ai:
+				self.outcome = "Stalemate."
+			elif human.move in ai.beats:
+				self.outcome = ai.result_vs(human.move)
+				self.score['ai'] = 1
+			elif ai.move in human.beats:
+				self.outcome = human.result_vs(ai.move)
+				self.score['human'] = 1
+			else:
+				raise Exception("Invalid move")
 		elif human.quitting:
-			break
-	print("Exiting.")
+			print("Exiting.")
+			print(game.score)
+			exit()
 
-def get_human_move(game):
-	stdin = input().strip()
-
-	if not stdin or stdin in ("exit", "quit"):
-		return Admin_move(True)
-	elif stdin in ("help", "moves", "rules", "?"):
-		print(game.rules)
-		return Admin_move(False)
-
-	for candidate in game.move_objs:
-		if stdin.casefold() in candidate.move.casefold():
-			return candidate
-	else:
-		return Admin_move(False)
-
-def round_results(human, ai):
-	if human == ai:
-		return "Stalemate."
-	elif human.move in ai.beats:
-		return ai.result_vs(human.move)
-	elif ai.move in human.beats:
-		return human.result_vs(ai.move)
-	else:
-		raise Exception("Invalid move")
+	def get_human_move(self, game):
+		stdin = input().strip()
+		if not stdin or stdin in ("exit", "quit"):
+			return Admin_move(True)
+		elif stdin in ("help", "moves", "rules", "?"):
+			print(game.rules)
+			return Admin_move(False)
+		for candidate in game.move_objs:
+			if stdin.casefold() in candidate.move.casefold():
+				return candidate
+		else:
+			return Admin_move(False)
 
 class Move:
+	"""Object that contains the name of a move,
+	   the moves it defeats, and how it defeats them."""
+	generic_verb = 'beats'
 	def __init__(self, number, total, info, move_names):
 		self.move = info.pop(0)
 		self.beats = dict()
@@ -91,6 +105,9 @@ class Game:
 		for i, move_info in enumerate(moves):
 			new = Move(i, len(moves), move_info, move_names)
 			self.move_objs.append(new)
+
+		# Keep score
+		self.score = dict(human=0, ai=0)
 
 		# Outside of this class, we'll need this list of moves stringified.
 		self.move_names = ", ".join(move_names)
