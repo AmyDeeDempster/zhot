@@ -53,7 +53,6 @@ def round_results(human, ai):
 	else:
 		raise Exception("Invalid move")
 
-
 class Move:
 	def __init__(self, number, total, info, move_names):
 		self.move = info.pop(0)
