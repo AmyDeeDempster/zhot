@@ -102,9 +102,10 @@ class Move:
 	)
 
 	generic_verb = 'beats'
-	def __init__(self, number, total, info, move_names):
+	def __init__(self, number, info, move_names):
 		self.move = info.pop(0)
 		self.beats = dict()
+		total = len(move_names)
 		# Get a range like [1,3,5]
 		for offset in range(1, total, 2):
 			# Get a string like "cuts" or "beats".
@@ -159,7 +160,7 @@ class Game():
 		move_names = [item[0] for item in moves]
 		self.move_objs = list()
 		for i, move_info in enumerate(moves):
-			new = Move(i, len(moves), move_info, move_names)
+			new = Move(i, move_info, move_names)
 			self.move_objs.append(new)
 
 		# Keep score
