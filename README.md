@@ -1,8 +1,8 @@
 Super-Zhot
-=========
+==========
 
-I had some fun teaching myself Perl with my Rock-Paper-Scissors script
-over at https://bitbucket.org/s3572869/rock-paper-scissors/src/master/
+I had some fun teaching myself Perl with my Rock-Paper-Scissors script over at 
+https://bitbucket.org/AmyDeeDempster/rock-paper-scissors
 
 This is a more extensible version in Python, done in a more mathematical
 and object-oriented manner.
