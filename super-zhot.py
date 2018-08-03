@@ -45,7 +45,7 @@ class Round:
 	"""Object that deals with a single round of the game""" 
 	def __init__(self, game):
 		print("Options: %s." % game.move_names )
-		print("What is your move? ", end="")
+		print("What is your move?", end=" ")
 
 		# These return instances of Move() or AdminMove()
 		human = self.get_human_move(game)
