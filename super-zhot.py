@@ -5,7 +5,10 @@ import sys
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
-	game = Game(sys.argv[1])
+	try: 
+		game = Game(sys.argv[1])
+	except IndexError:
+		game = DefaultGame()
 
 	# Play the game
 	while True:
@@ -13,6 +16,7 @@ def main():
 		print(the_round.moves + the_round.outcome)
 		game.score.human += the_round.score.human
 		game.score.ai    += the_round.score.ai
+
 
 class Score:
 	"Essentially just a dictionary, but with a custom representation."
@@ -140,10 +144,10 @@ class Game():
 			with open(filename) as filehandle:
 				rows = csv.reader(filehandle, delimiter=',', quotechar='"')
 				# Ignore blank lines.
-				moves = [row for row in rows if len(row)]
-				if len(moves) % 2 == 0:
+				moves_from_file = [row for row in rows if len(row)]
+				if len(moves_from_file) % 2 == 0:
 					raise NotOddError("For a fair game, there must be an odd number of moves.")
-				if len(moves) < 3:
+				if len(moves_from_file) < 3:
 					raise InsufficientMovesError("Multiple moves are necessary.")
 		except UnicodeDecodeError as error:
 			print("That is not a valid CSV file.")
@@ -157,12 +161,16 @@ class Game():
 			exit()
 
 		# Turn list of strings into list of Move objects
-		move_names = [item[0] for item in moves]
+		move_names = [item[0] for item in moves_from_file]
 		self.move_objs = list()
-		for i, move_info in enumerate(moves):
+		for i, move_info in enumerate(moves_from_file):
 			new = Move(i, move_info, move_names)
 			self.move_objs.append(new)
 
+		self.complete_initialisation(move_names)
+		print("Starting game with rules from {}.".format(filename))
+
+	def complete_initialisation(self, move_names):
 		# Keep score
 		self.score = Score()
 		self.rounds = 0
@@ -176,5 +184,15 @@ class Game():
 			for loser, verb in obj.beats.items():
 				self.rules += (" ".join((obj.move, verb, loser)) + ".\n")
 		self.rules += "\nMake one of these moves, or use ‘score’, ‘rounds’, ‘help’ or ‘exit’."
+
+class DefaultGame(Game):
+	def __init__(self):
+		move_names = ("Scissors", "Paper", "Rock")
+		scissors = Move(0, ["Scissors", "cuts"], move_names)
+		paper    = Move(1, ["Paper", "wraps"],   move_names)
+		rock     = Move(2, ["Rock", "blunts"],   move_names)
+		self.move_objs = [scissors, paper, rock]
+		self.complete_initialisation(move_names)
+		print("Starting game with default rules.")
 
 main()
