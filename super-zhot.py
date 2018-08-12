@@ -2,6 +2,8 @@
 import csv
 import random
 import sys
+import math
+from math import (pi, tau)
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
@@ -186,6 +188,7 @@ class Game():
 		self.rules += "\nMake one of these moves, or use ‘score’, ‘rounds’, ‘help’ or ‘exit’."
 
 class DefaultGame(Game):
+	"This is what we use if no game rules are provided."
 	def __init__(self):
 		move_names = ("Scissors", "Paper", "Rock")
 		scissors = Move(0, ["Scissors", "cuts"], move_names)
@@ -194,5 +197,68 @@ class DefaultGame(Game):
 		self.move_objs = [scissors, paper, rock]
 		self.complete_initialisation(move_names)
 		print("Starting game with default rules.")
+
+class Diagram():
+	FULL_CIRCLE = 360 # degrees
+	DIAGRAM_SIZE = 1000
+
+	def px(integer):
+		return str(integer) + "px"
+
+	def __init__(self, move_objs):
+		self.diagram = svgwrite.Drawing(
+			filename = "diagram.svg",
+			size = (px(self.DIAGRAM_SIZE), px(self.DIAGRAM_SIZE))
+		)
+		num_moves = len(move_objs)
+		angles = range(0, Diagram.FULL_CIRCLE, Diagram.FULL_CIRCLE / num_moves)
+		CIRCLE_RADIUS = 60
+		DIAGRAM_RADIUS = self.DIAGRAM_SIZE / 2
+		NORTH, EAST, SOUTH, WEST = (0, 90, 180, 270)
+		move_points = list()
+		hypotenuse = DIAGRAM_RADIUS - CIRCLE_RADIUS
+		for angle in angles:
+			# Cardinal points first
+			if angle == NORTH:
+				point = (DIAGRAM_RADIUS, CIRCLE_RADIUS)
+			elif angle == EAST:
+				point = (self.DIAGRAM_SIZE - CIRCLE_RADIUS, DIAGRAM_RADIUS)
+			elif angle == SOUTH:
+				point = (DIAGRAM_RADIUS, self.DIAGRAM_SIZE - CIRCLE_RADIUS)
+			elif angle == WEST:
+				point = (CIRCLE_RADIUS, DIAGRAM_RADIUS)
+			# Otherwise, other angles
+			radians = math.radians(angle % 90)
+			opposite = hypotenuse * math.sin(radians)
+			adjacent = hypotenuse * math.cos(radians)
+			if angle < EAST:
+				point = (DIAGRAM_RADIUS + opposite, DIAGRAM_RADIUS - adjacent)
+			elif angle < SOUTH:
+				point = (DIAGRAM_RADIUS + adjacent, DIAGRAM_RADIUS + opposite)
+			elif angle < WEST:
+				point = (DIAGRAM_RADIUS - opposite, DIAGRAM_RADIUS + adjacent)
+			else:
+				point = (DIAGRAM_RADIUS - adjacent, DIAGRAM_RADIUS - opposite)
+			move_points.append(point)
+
+
+
+	# svg_document.add(
+	# 	svg_document.rect(
+	# 		insert = (0, 0),
+	# 		size = ("200px", "100px"),
+	# 		stroke_width = "1",
+	# 		stroke = "black",
+	# 		fill = "rgb(255,255,0)"
+	# 	)
+	# )
+
+	# svg_document.add(
+	# 	svg_document.text(
+	# 		"Hello World",
+	# 		insert = (210, 110)
+	# 	)
+	# )
+	# svg_document.save()
 
 main()
