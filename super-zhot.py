@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 import csv
 import random
 import sys
@@ -103,7 +103,7 @@ class Round:
 		elif stdin in ("dia", "diagram"):
 			diagram = Diagram(game.move_objs)
 			print(diagram.move_points)
-			return AdminMove(quitting=True)
+			return AdminMove(quitting=False)
 		for candidate in game.move_objs:
 			if stdin.casefold() in candidate.move.casefold():
 				return candidate
