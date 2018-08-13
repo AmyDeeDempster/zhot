@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg baseProfile="full" height="1000px" version="1.1" width="1000px" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><style type="text/css"><![CDATA[
+					text {
+						font-size: 55.666666666666664px;
+					}
+				]]></style></defs><rect fill="darkgrey" height="1000px" stroke="grey" stroke-width="10" width="1000px" x="0" y="0" /><circle cx="500px" cy="500px" fill="darkgrey" r="500px" stroke="grey" stroke-width="1px" /><line stroke="black" x1="788.39" x2="211.61" y1="666.5" y2="666.5" /><circle cx="788.39px" cy="666.5px" fill="white" r="167px" stroke="grey" stroke-width="2px" /><text lengthAdjust="spacingAndGlyphs" text-anchor="middle" textLength="211.53px" x="788.39" y="680.42">Scissors</text><line stroke="black" x1="211.61" x2="500" y1="666.5" y2="167" /><circle cx="211.61px" cy="666.5px" fill="white" r="167px" stroke="grey" stroke-width="2px" /><text lengthAdjust="spacingAndGlyphs" text-anchor="middle" textLength="132.21px" x="211.61" y="680.42">Paper</text><line stroke="black" x1="500" x2="788.39" y1="167" y2="666.5" /><circle cx="500px" cy="167px" fill="white" r="167px" stroke="grey" stroke-width="2px" /><text lengthAdjust="spacingAndGlyphs" text-anchor="middle" textLength="132.21px" x="500" y="180.92">Stone</text></svg>

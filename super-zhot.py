@@ -1,9 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 import csv
 import random
 import sys
 import math
+import svgwrite
 from math import (pi, tau)
+from collections import namedtuple
+from matplotlib.mlab import frange
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
@@ -19,6 +22,9 @@ def main():
 		game.score.human += the_round.score.human
 		game.score.ai    += the_round.score.ai
 
+def rounded(num):
+	DEC_PLACES = 2
+	return round(num, DEC_PLACES)
 
 class Score:
 	"Essentially just a dictionary, but with a custom representation."
@@ -44,7 +50,7 @@ class Score:
 		)
 
 class Round:
-	"""Object that deals with a single round of the game""" 
+	"""Object that deals with a single round of the game"""
 	def __init__(self, game):
 		print("Options: %s." % game.move_names )
 		print("What is your move?", end=" ")
@@ -52,7 +58,7 @@ class Round:
 		# These return instances of Move() or AdminMove()
 		human = self.get_human_move(game)
 		ai    = random.choice(game.move_objs)
-		
+
 		# Check whether that was a real move, or perhaps a move to quit.
 		self.moves = str()
 		self.outcome = str()
@@ -79,7 +85,8 @@ class Round:
 			print(game.score.upshot())
 			exit()
 
-	def get_human_move(self, game):
+	@staticmethod
+	def get_human_move(game):
 		"Parse player input."
 		stdin = input().strip()
 		if not stdin or stdin in ("exit", "quit"):
@@ -93,6 +100,10 @@ class Round:
 		elif stdin in ("help", "moves", "rules", "?"):
 			print(game.rules)
 			return AdminMove(quitting=False)
+		elif stdin in ("dia", "diagram"):
+			diagram = Diagram(game.move_objs)
+			print(diagram.move_points)
+			return AdminMove(quitting=True)
 		for candidate in game.move_objs:
 			if stdin.casefold() in candidate.move.casefold():
 				return candidate
@@ -123,8 +134,21 @@ class Move:
 			loser = move_names[(number + offset) % total]
 			# Set a dictionary entry like {"Paper": "cuts"}
 			self.beats[loser] = verb
+		self.num = number
+		self.beats_num = [
+			# All the odd-numbered indices (our of all the Move objects),
+			# shifted forward by the number of the current move,
+			# then made to modulo-wrap, so as to yield e.g. [3, 5, 1]
+			(i + number) % total for i in range(total) if i % 2 != 0
+		]
 	def result_vs(self, enemy_move):
 		return " ".join((self.move, self.beats[enemy_move], enemy_move)) + "."
+	def __repr__(self):
+		string =  "Move name: ‘" + self.move + "’; "
+		string += "Move beats: " + str(self.beats) + "; "
+		string += "Move num: " + str(self.num) + "; "
+		string += "Move beats nums: " + str(self.beats_num) + "; "
+		return string
 
 class AdminMove(Move):
 	"Like Move(), but not concerned with actually playing, but rather stuff like displaying help."
@@ -198,67 +222,154 @@ class DefaultGame(Game):
 		self.complete_initialisation(move_names)
 		print("Starting game with default rules.")
 
-class Diagram():
+class Point:
+	def __init__(self, x, y):
+		x, y = (rounded(num) for num in (x, y))
+		self.dict  = dict(x=x, y=y)
+		self.tuple = (self.x, self.y) = (x, y)
+	def __repr__(self):
+		return "Point: " + str(self.dict)
+	def __iter__(self):
+		return iter(self.tuple)
+
+class Diagram:
+	"Class which generates data to output a vector diagram of the game rules."
 	FULL_CIRCLE = 360 # degrees
 	DIAGRAM_SIZE = 1000
 
+	@staticmethod
 	def px(integer):
 		return str(integer) + "px"
 
+	@staticmethod
+	def dup(single):
+		return (single, single)
+
 	def __init__(self, move_objs):
+		# Import static methods from class
+		px  = self.px
+		dup = self.dup
 		self.diagram = svgwrite.Drawing(
 			filename = "diagram.svg",
 			size = (px(self.DIAGRAM_SIZE), px(self.DIAGRAM_SIZE))
 		)
-		num_moves = len(move_objs)
-		angles = range(0, Diagram.FULL_CIRCLE, Diagram.FULL_CIRCLE / num_moves)
-		CIRCLE_RADIUS = 60
-		DIAGRAM_RADIUS = self.DIAGRAM_SIZE / 2
+		angle_slice = Diagram.FULL_CIRCLE / len(move_objs)
+		# Get a frange like array([0., 120., 240.])
+		angles = frange(angle_slice, Diagram.FULL_CIRCLE, angle_slice)
+		DIAGRAM_RADIUS = round(self.DIAGRAM_SIZE / 2)
+		CIRCLE_RADIUS = round(DIAGRAM_RADIUS / len(move_objs))
 		NORTH, EAST, SOUTH, WEST = (0, 90, 180, 270)
 		move_points = list()
 		hypotenuse = DIAGRAM_RADIUS - CIRCLE_RADIUS
 		for angle in angles:
 			# Cardinal points first
-			if angle == NORTH:
-				point = (DIAGRAM_RADIUS, CIRCLE_RADIUS)
+			if angle == NORTH or angle == Diagram.FULL_CIRCLE:
+				p = Point(DIAGRAM_RADIUS, CIRCLE_RADIUS)
 			elif angle == EAST:
-				point = (self.DIAGRAM_SIZE - CIRCLE_RADIUS, DIAGRAM_RADIUS)
+				p = Point(self.DIAGRAM_SIZE - CIRCLE_RADIUS, DIAGRAM_RADIUS)
 			elif angle == SOUTH:
-				point = (DIAGRAM_RADIUS, self.DIAGRAM_SIZE - CIRCLE_RADIUS)
+				p = Point(DIAGRAM_RADIUS, self.DIAGRAM_SIZE - CIRCLE_RADIUS)
 			elif angle == WEST:
-				point = (CIRCLE_RADIUS, DIAGRAM_RADIUS)
-			# Otherwise, other angles
-			radians = math.radians(angle % 90)
-			opposite = hypotenuse * math.sin(radians)
-			adjacent = hypotenuse * math.cos(radians)
-			if angle < EAST:
-				point = (DIAGRAM_RADIUS + opposite, DIAGRAM_RADIUS - adjacent)
-			elif angle < SOUTH:
-				point = (DIAGRAM_RADIUS + adjacent, DIAGRAM_RADIUS + opposite)
-			elif angle < WEST:
-				point = (DIAGRAM_RADIUS - opposite, DIAGRAM_RADIUS + adjacent)
-			else:
-				point = (DIAGRAM_RADIUS - adjacent, DIAGRAM_RADIUS - opposite)
-			move_points.append(point)
+				p = Point(CIRCLE_RADIUS, DIAGRAM_RADIUS)
+			else: # Otherwise, other angles
+				radians = math.radians(angle % EAST)
+				opposite = hypotenuse * math.sin(radians)
+				adjacent = hypotenuse * math.cos(radians)
+				if angle < EAST:
+					p = Point(DIAGRAM_RADIUS + opposite, DIAGRAM_RADIUS - adjacent)
+				elif angle < SOUTH:
+					p = Point(DIAGRAM_RADIUS + adjacent, DIAGRAM_RADIUS + opposite)
+				elif angle < WEST:
+					p = Point(DIAGRAM_RADIUS - opposite, DIAGRAM_RADIUS + adjacent)
+				else:
+					p = Point(DIAGRAM_RADIUS - adjacent, DIAGRAM_RADIUS - opposite)
+			move_points.append(p)
+		self.move_points = move_points
 
+		if len(move_points) > len(move_objs):
+			print("Slight error: I have data for too many circles in the diagram.")
 
+		# Big border.
+		self.diagram.add(
+			self.diagram.rect(
+				insert = (0, 0),
+				size = (dup(px(self.DIAGRAM_SIZE))),
+				stroke_width = str(10),
+				stroke = "grey",
+				fill = "darkgrey"
+			)
+		)
 
-	# svg_document.add(
-	# 	svg_document.rect(
-	# 		insert = (0, 0),
-	# 		size = ("200px", "100px"),
-	# 		stroke_width = "1",
-	# 		stroke = "black",
-	# 		fill = "rgb(255,255,0)"
-	# 	)
-	# )
+		# Big circle.
+		self.diagram.add(
+			self.diagram.circle(
+				center = (dup(px(DIAGRAM_RADIUS))),
+				r = px(DIAGRAM_RADIUS),
+				stroke_width = px(1),
+				stroke = "grey",
+				fill = "darkgrey"
+			)
+		)
 
-	# svg_document.add(
-	# 	svg_document.text(
-	# 		"Hello World",
-	# 		insert = (210, 110)
-	# 	)
-	# )
-	# svg_document.save()
+		text_size = CIRCLE_RADIUS / 3
+		max_text_len = 12
+
+		self.diagram.defs.add(
+			self.diagram.style(
+				"""
+					text {
+						font-size: %spx;
+					}
+				""" % text_size
+			)
+		)
+
+		# A circle for each move, with legend.
+		num_moves = len(move_points)
+		for i, point in enumerate(move_points):
+			#print("Making circle at", point)
+			print(move_objs[i])
+			point_px = (px(rounded(num)) for num in point)
+
+			for target in move_objs[i].beats_num:
+				self.diagram.add(
+					self.diagram.line(
+						start = point,
+						end = move_points[target],
+						stroke = "black",
+					)
+				)
+
+			self.diagram.add(
+				self.diagram.circle(
+					center = (point_px),
+					r = px(CIRCLE_RADIUS),
+					stroke_width = px(2),
+					stroke = "grey",
+					fill = "white"
+				)
+			)
+
+			text = move_objs[i].move
+			text_length = max_text_len if (len(text) > max_text_len) else len(text)
+			# Turn into coefficient
+			text_length /= max_text_len
+			# A bit less than double the radius, to allow padding.
+			text_length_px = rounded(1.9 * CIRCLE_RADIUS * text_length)
+			downshifted = (
+				rounded(point.x),
+				rounded(point.y + text_size / 4)
+			)
+			self.diagram.add(
+				self.diagram.text(
+					text,
+					insert = (downshifted),
+					text_anchor = "middle",
+					textLength = px(text_length_px),
+					lengthAdjust = "spacingAndGlyphs",
+				)
+			)
+
+		self.diagram.save()
 
 main()
