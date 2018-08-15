@@ -103,7 +103,7 @@ class Round:
 		elif stdin in ("dia", "diagram"):
 			diagram = Diagram(game.move_objs)
 			print(diagram.move_points)
-			return AdminMove(quitting=False)
+			return AdminMove(quitting=True)
 		for candidate in game.move_objs:
 			if stdin.casefold() in candidate.move.casefold():
 				return candidate
@@ -289,67 +289,97 @@ class Diagram:
 		if len(move_points) > len(move_objs):
 			print("Slight error: I have data for too many circles in the diagram.")
 
-		# Big border.
-		self.diagram.add(
-			self.diagram.rect(
-				insert = (0, 0),
-				size = (dup(px(self.DIAGRAM_SIZE))),
-				stroke_width = str(10),
-				stroke = "grey",
-				fill = "darkgrey"
-			)
-		)
-
-		# Big circle.
-		self.diagram.add(
-			self.diagram.circle(
-				center = (dup(px(DIAGRAM_RADIUS))),
-				r = px(DIAGRAM_RADIUS),
-				stroke_width = px(1),
-				stroke = "grey",
-				fill = "darkgrey"
-			)
-		)
-
 		text_size = CIRCLE_RADIUS / 3
 		max_text_len = 12
 
-		self.diagram.defs.add(
-			self.diagram.style(
-				"""
-					text {
-						font-size: %spx;
-					}
-				""" % text_size
+		# Put as much styling as possible here
+		style_sheet = self.diagram.style(
+"""
+		g#decorative rect {
+			stroke-width: 5px;
+			stroke: silver;
+			fill: grey;
+		}
+		g#decorative circle {
+			stroke-width: 2px;
+			stroke: yellow;
+			fill: azure;
+		}
+		text {
+			font-size: %spx;
+			opacity: 0.3;
+		}
+		line {
+			stroke-width: 9px;
+			stroke-linecap: round;
+			stroke: black;
+		}
+		circle {
+			opacity: 0.1;
+			stroke-width: 2px;
+			stroke: teal;
+			fill: white;
+		}
+		marker polygon {
+			fill: blue;
+			opacity: 0.9;
+		}
+""" % round(text_size)
+		)
+		self.diagram.defs.add(style_sheet)
+
+		arrowhead = self.diagram.marker(
+			insert=(1.5, 2),
+			size=(4, 4),
+			id="head",
+			orient="auto",
+		)
+		arrowhead.add(
+			self.diagram.polygon(
+				points=[(0, 0), (4, 2), (0, 4)],
 			)
 		)
+
+		self.diagram.defs.add(arrowhead)
+		# / defs
+
+		decorative = self.diagram.g(id="decorative")
+		decorative.add(
+			self.diagram.rect(
+				insert=(0, 0),
+				size=(dup(px(self.DIAGRAM_SIZE))),
+			)
+		)
+		decorative.add(
+			self.diagram.circle(
+				center=(dup(px(DIAGRAM_RADIUS))),
+				r=px(DIAGRAM_RADIUS),
+			)
+		)
+		self.diagram.add(decorative)
+
+		all_moves_g = self.diagram.g(id="moves")
 
 		# A circle for each move, with legend.
 		num_moves = len(move_points)
 		for i, point in enumerate(move_points):
-			#print("Making circle at", point)
-			print(move_objs[i])
 			point_px = (px(rounded(num)) for num in point)
+			the_move_obj = move_objs[i]
+			print(the_move_obj)
 
-			for target in move_objs[i].beats_num:
-				self.diagram.add(
-					self.diagram.line(
-						start = point,
-						end = move_points[target],
-						stroke = "black",
-					)
-				)
-
-			self.diagram.add(
+			name = "for " + the_move_obj.move
+			move_group = self.diagram.g(
+				id=name.replace(" ", "-"),
+			)
+			
+			move_group.add(
 				self.diagram.circle(
-					center = (point_px),
-					r = px(CIRCLE_RADIUS),
-					stroke_width = px(2),
-					stroke = "grey",
-					fill = "white"
+					center=(point_px),
+					r=px(CIRCLE_RADIUS),
 				)
 			)
 
+			# Calculate some stuff for the text.
 			text = move_objs[i].move
 			text_length = max_text_len if (len(text) > max_text_len) else len(text)
 			# Turn into coefficient
@@ -360,7 +390,7 @@ class Diagram:
 				rounded(point.x),
 				rounded(point.y + text_size / 4)
 			)
-			self.diagram.add(
+			move_group.add(
 				self.diagram.text(
 					text,
 					insert = (downshifted),
@@ -369,6 +399,20 @@ class Diagram:
 					lengthAdjust = "spacingAndGlyphs",
 				)
 			)
+
+			# All the various beat lines.
+			beats_lines = self.diagram.g(id="beats")
+			for target in move_objs[i].beats_num:
+				beats_lines.add(
+					self.diagram.line(
+						start = point,
+						end = move_points[target],
+						stroke = "black",
+						marker_end = "url(#head)"
+					)
+				)
+			move_group.add(beats_lines)
+			all_moves_g.add(move_group)
 
 		self.diagram.save()
 
