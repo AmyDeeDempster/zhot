@@ -21,6 +21,24 @@ Other commands available include:
 
 You can also just hit Return to quit the game.
 
+Dependencies
+============
+
+Interpreter
+-----------
+
+Python > 3.6
+
+Packages
+--------
+
+* csv
+* random
+* sys
+* math
+* svgwrite
+* matplotlib.mlab
+
 Licence
 =======
 
