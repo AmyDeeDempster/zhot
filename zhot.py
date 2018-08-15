@@ -5,7 +5,6 @@ import sys
 import math
 import svgwrite
 from math import (tau, sqrt)
-from collections import namedtuple
 from matplotlib.mlab import frange
 
 def main():
