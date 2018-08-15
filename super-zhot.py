@@ -4,7 +4,7 @@ import random
 import sys
 import math
 import svgwrite
-from math import (pi, tau)
+from math import (tau, sqrt)
 from collections import namedtuple
 from matplotlib.mlab import frange
 
@@ -297,28 +297,27 @@ class Diagram:
 """
 		g#decorative rect {
 			stroke-width: 5px;
-			stroke: silver;
-			fill: grey;
+			stroke: darkGrey;
+			fill: silver;
 		}
 		g#decorative circle {
-			stroke-width: 2px;
-			stroke: yellow;
-			fill: azure;
+			stroke: none;
+			fill: url(#radgrad);
 		}
-		text {
+		g#moves circle {
+			stroke-width: 2px;
+			stroke: none;
+			fill: url(#radgrad);
+			opacity: 0.3;
+		}
+		g#moves text {
 			font-size: %spx;
 			opacity: 0.3;
 		}
-		line {
+		g#moves g line {
 			stroke-width: 9px;
 			stroke-linecap: round;
 			stroke: black;
-		}
-		circle {
-			opacity: 0.1;
-			stroke-width: 2px;
-			stroke: teal;
-			fill: white;
 		}
 		marker polygon {
 			fill: blue;
@@ -327,6 +326,11 @@ class Diagram:
 """ % round(text_size)
 		)
 		self.diagram.defs.add(style_sheet)
+
+		gradient = self.diagram.defs.add(
+			self.diagram.radialGradient(id="radgrad")
+		)
+		gradient.add_stop_color('0%', 'white').add_stop_color('100%', 'silver')
 
 		arrowhead = self.diagram.marker(
 			insert=(1.5, 2),
@@ -348,6 +352,7 @@ class Diagram:
 			self.diagram.rect(
 				insert=(0, 0),
 				size=(dup(px(self.DIAGRAM_SIZE))),
+				#fill=gradient.get_paint_server(),
 			)
 		)
 		decorative.add(
@@ -412,8 +417,43 @@ class Diagram:
 					)
 				)
 			move_group.add(beats_lines)
+
 			all_moves_g.add(move_group)
 
+		self.diagram.add(all_moves_g)
 		self.diagram.save()
+
+
+class ResizableLine:
+	"""
+		A class storing co-ordinates of a line for later use in, e.g. SVG.
+		It provides methods for resizing of the line.
+	"""
+
+	def __init__(self, start, end):
+		self.start = Point(start)
+		self.end   = Point(end)
+
+		self.dict  = dict(start=self.start, end=self.end)
+		self.tuple = (self.start, self.end) 
+	def __repr__(self):
+		return "Line: " + str(self.dict)
+	def __iter__(self):
+		return iter(self.tuple)
+
+	def resize(self, chop, proportional=False):
+		"Shortens a line from the end."
+		# The width & height of the triangle of the line.
+		x = self.start.x - self.end.x
+		y = self.start.y - self.end.y
+		# The length of the line.
+		hypotenuse = sqrt((x * x) + (y * y)) 
+		# We must know what proportion to chop off. We need a coefficient.
+		if not proportional: 
+			chop = chop / hypotenuse
+		# New width & height.
+		x, y = [n * chop for n in (x, y)]
+		
+
 
 main()
