@@ -223,8 +223,19 @@ class DefaultGame(Game):
 		print("Starting game with default rules.")
 
 class Point:
-	def __init__(self, x, y):
-		x, y = (rounded(num) for num in (x, y))
+	def __init__(self, x, y=0):
+		# See if the argument is already a Point or collection.
+		if type(x) == Point:
+			preexisting = x
+			x = preexisting.x
+			y = preexisting.y
+		elif type(x) == tuple or type(x) == list:
+			preexisting = x
+			x = preexisting[0]
+			y = preexisting[1]
+		else:
+			x, y = (rounded(num) for num in (x, y))
+		# Store.
 		self.dict  = dict(x=x, y=y)
 		self.tuple = (self.x, self.y) = (x, y)
 	def __repr__(self):
@@ -238,20 +249,15 @@ class Diagram:
 	DIAGRAM_SIZE = 1000
 
 	@staticmethod
-	def px(integer):
-		return str(integer) + "px"
-
-	@staticmethod
 	def dup(single):
 		return (single, single)
 
 	def __init__(self, move_objs):
 		# Import static methods from class
-		px  = self.px
 		dup = self.dup
 		self.diagram = svgwrite.Drawing(
 			filename = "diagram.svg",
-			size = (px(self.DIAGRAM_SIZE), px(self.DIAGRAM_SIZE))
+			size = (self.DIAGRAM_SIZE, self.DIAGRAM_SIZE)
 		)
 		angle_slice = Diagram.FULL_CIRCLE / len(move_objs)
 		# Get a frange like array([0., 120., 240.])
@@ -300,28 +306,21 @@ class Diagram:
 			stroke: darkGrey;
 			fill: silver;
 		}
-		g#decorative circle {
+		circle {
 			stroke: none;
 			fill: url(#radgrad);
-		}
-		g#moves circle {
-			stroke-width: 2px;
-			stroke: none;
-			fill: url(#radgrad);
-			opacity: 0.3;
 		}
 		g#moves text {
 			font-size: %spx;
-			opacity: 0.3;
 		}
 		g#moves g line {
-			stroke-width: 9px;
+			stroke-width: 8px;
 			stroke-linecap: round;
 			stroke: black;
+			marker-end: url(#head);
 		}
 		marker polygon {
-			fill: blue;
-			opacity: 0.9;
+			fill: #500;
 		}
 """ % round(text_size)
 		)
@@ -340,7 +339,7 @@ class Diagram:
 		)
 		arrowhead.add(
 			self.diagram.polygon(
-				points=[(0, 0), (4, 2), (0, 4)],
+				points=[(0, 0), (4, 2), (0, 4), (1, 2)],
 			)
 		)
 
@@ -351,14 +350,14 @@ class Diagram:
 		decorative.add(
 			self.diagram.rect(
 				insert=(0, 0),
-				size=(dup(px(self.DIAGRAM_SIZE))),
+				size=(dup(self.DIAGRAM_SIZE)),
 				#fill=gradient.get_paint_server(),
 			)
 		)
 		decorative.add(
 			self.diagram.circle(
-				center=(dup(px(DIAGRAM_RADIUS))),
-				r=px(DIAGRAM_RADIUS),
+				center=(dup(DIAGRAM_RADIUS)),
+				r=DIAGRAM_RADIUS,
 			)
 		)
 		self.diagram.add(decorative)
@@ -368,7 +367,6 @@ class Diagram:
 		# A circle for each move, with legend.
 		num_moves = len(move_points)
 		for i, point in enumerate(move_points):
-			point_px = (px(rounded(num)) for num in point)
 			the_move_obj = move_objs[i]
 			print(the_move_obj)
 
@@ -379,8 +377,8 @@ class Diagram:
 			
 			move_group.add(
 				self.diagram.circle(
-					center=(point_px),
-					r=px(CIRCLE_RADIUS),
+					center=(point.tuple),
+					r=CIRCLE_RADIUS,
 				)
 			)
 
@@ -400,7 +398,7 @@ class Diagram:
 					text,
 					insert = (downshifted),
 					text_anchor = "middle",
-					textLength = px(text_length_px),
+					textLength = text_length_px,
 					lengthAdjust = "spacingAndGlyphs",
 				)
 			)
@@ -408,12 +406,12 @@ class Diagram:
 			# All the various beat lines.
 			beats_lines = self.diagram.g(id="beats")
 			for target in move_objs[i].beats_num:
+				line = ResizableLine(point, move_points[target]).resize(1/3)
+				line.resize(1/3, from_start=True, from_end=False)
 				beats_lines.add(
 					self.diagram.line(
-						start = point,
-						end = move_points[target],
-						stroke = "black",
-						marker_end = "url(#head)"
+						start=line.start,
+						end=line.end,
 					)
 				)
 			move_group.add(beats_lines)
@@ -433,27 +431,44 @@ class ResizableLine:
 	def __init__(self, start, end):
 		self.start = Point(start)
 		self.end   = Point(end)
-
-		self.dict  = dict(start=self.start, end=self.end)
-		self.tuple = (self.start, self.end) 
+		self._gen_vars()
 	def __repr__(self):
 		return "Line: " + str(self.dict)
 	def __iter__(self):
 		return iter(self.tuple)
 
-	def resize(self, chop, proportional=False):
-		"Shortens a line from the end."
-		# The width & height of the triangle of the line.
-		x = self.start.x - self.end.x
-		y = self.start.y - self.end.y
-		# The length of the line.
-		hypotenuse = sqrt((x * x) + (y * y)) 
-		# We must know what proportion to chop off. We need a coefficient.
-		if not proportional: 
-			chop = chop / hypotenuse
-		# New width & height.
-		x, y = [n * chop for n in (x, y)]
-		
+	def _gen_vars(self):
+		"Must be run every time the start or end of the line is modified."
+		# Generate some collections.
+		self.dict   = dict(start=self.start, end=self.end)
+		self.tuple  = (self.start, self.end) 
+		# The base & height of the triangle of the line.
+		self.base   = self.end.x - self.start.x
+		self.height = self.end.y - self.start.y
+		# Thank you, Pythagorus.
+		hypotenuse = sqrt((self.base ** 2) + (self.height ** 2))
+		self.length = hypotenuse
 
+	def resize(self, chop, proportional=True, from_start=False, from_end=True):
+		"""
+			Recalculates a new line length, and then (using this as the hypotenuse)
+			recalculates the base and height of the triangle of a line.
+		"""
+		if not proportional: 
+			# Pixel value must be converted to a coefficient.
+			chop = chop / self.length
+		# Divide the resizing between the start and end of the line.		
+		if from_start and from_end:
+			chop / 2
+		# New base & height.
+		base, height = [n * (1 - chop) for n in (self.base, self.height)]
+		# Actually calc the new start/end points.
+		start, end = (self.start, self.end)
+		if from_start:
+			self.start = Point(end.x - base, end.y - height)
+		if from_end:
+			self.end = Point(start.x + base, start.y + height)
+		self._gen_vars()
+		return(self)
 
 main()
