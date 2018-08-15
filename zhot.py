@@ -4,8 +4,9 @@ import random
 import sys
 import math
 import svgwrite
-from math import (tau, sqrt)
+from math import sqrt
 from matplotlib.mlab import frange
+
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
@@ -19,17 +20,21 @@ def main():
 		the_round = Round(game)
 		print(the_round.moves + the_round.outcome)
 		game.score.human += the_round.score.human
-		game.score.ai    += the_round.score.ai
+		game.score.ai += the_round.score.ai
+
 
 def rounded(num):
 	DEC_PLACES = 2
 	return round(num, DEC_PLACES)
 
+
 class Score:
 	"Essentially just a dictionary, but with a custom representation."
+
 	def __init__(self, human=0, ai=0):
 		self.human = human
-		self.ai    = ai
+		self.ai = ai
+
 	def upshot(self):
 		if self.ai > self.human:
 			return "I win."
@@ -37,26 +42,31 @@ class Score:
 			return "You win."
 		else:
 			return "We have tied."
+
 	def dict(self):
 		"Dictionary representation of this class"
 		return dict(human=self.human, ai=self.ai)
+
 	def __repr__(self):
 		return str(self.dict())
+
 	def __str__(self):
 		return "You have scored {} and I have scored {}.".format(
 			self.human,
 			self.ai
 		)
 
+
 class Round:
 	"""Object that deals with a single round of the game"""
+
 	def __init__(self, game):
-		print("Options: %s." % game.move_names )
+		print("Options: %s." % game.move_names)
 		print("What is your move?", end=" ")
 
 		# These return instances of Move() or AdminMove()
 		human = self.get_human_move(game)
-		ai    = random.choice(game.move_objs)
+		ai = random.choice(game.move_objs)
 
 		# Check whether that was a real move, or perhaps a move to quit.
 		self.moves = str()
@@ -109,6 +119,7 @@ class Round:
 		else:
 			return AdminMove(quitting=False)
 
+
 class Move:
 	"""Object that contains the name of a move,
 	   the moves it defeats, and how it defeats them."""
@@ -118,6 +129,7 @@ class Move:
 	)
 
 	generic_verb = 'beats'
+
 	def __init__(self, number, info, move_names):
 		self.move = info.pop(0)
 		self.beats = dict()
@@ -140,29 +152,35 @@ class Move:
 			# then made to modulo-wrap, so as to yield e.g. [3, 5, 1]
 			(i + number) % total for i in range(total) if i % 2 != 0
 		]
+
 	def result_vs(self, enemy_move):
 		return " ".join((self.move, self.beats[enemy_move], enemy_move)) + "."
+
 	def __repr__(self):
-		string =  "Move name: ‘" + self.move + "’; "
+		string = "Move name: ‘" + self.move + "’; "
 		string += "Move beats: " + str(self.beats) + "; "
 		string += "Move num: " + str(self.num) + "; "
 		string += "Move beats nums: " + str(self.beats_num) + "; "
 		return string
 
+
 class AdminMove(Move):
 	"Like Move(), but not concerned with actually playing, but rather stuff like displaying help."
+
 	def __init__(self, quitting=False):
 		self.move = False
 		self.quitting = quitting
 
+
 class NotOddError(ValueError):
 	pass
-
 class InsufficientMovesError(ValueError):
 	pass
 
+
 class Game():
 	"Object that contains a list of Move objects and strings with info on the game."
+
 	def __init__(self, filename):
 		# Turn CSV into list of strings.
 		try:
@@ -210,18 +228,22 @@ class Game():
 				self.rules += (" ".join((obj.move, verb, loser)) + ".\n")
 		self.rules += "\nMake one of these moves, or use ‘score’, ‘rounds’, ‘help’ or ‘exit’."
 
+
 class DefaultGame(Game):
 	"This is what we use if no game rules are provided."
+
 	def __init__(self):
 		move_names = ("Scissors", "Paper", "Rock")
 		scissors = Move(0, ["Scissors", "cuts"], move_names)
-		paper    = Move(1, ["Paper", "wraps"],   move_names)
-		rock     = Move(2, ["Rock", "blunts"],   move_names)
+		paper = Move(1, ["Paper", "wraps"], move_names)
+		rock = Move(2, ["Rock", "blunts"], move_names)
 		self.move_objs = [scissors, paper, rock]
 		self.complete_initialisation(move_names)
 		print("Starting game with default rules.")
 
+
 class Point:
+
 	def __init__(self, x, y=0):
 		# See if the argument is already a Point or collection.
 		if type(x) == Point:
@@ -235,16 +257,19 @@ class Point:
 		else:
 			x, y = (rounded(num) for num in (x, y))
 		# Store.
-		self.dict  = dict(x=x, y=y)
+		self.dict = dict(x=x, y=y)
 		self.tuple = (self.x, self.y) = (x, y)
+
 	def __repr__(self):
 		return "Point: " + str(self.dict)
+
 	def __iter__(self):
 		return iter(self.tuple)
 
+
 class Diagram:
 	"Class which generates data to output a vector diagram of the game rules."
-	FULL_CIRCLE = 360 # degrees
+	FULL_CIRCLE = 360  # degrees
 	DIAGRAM_SIZE = 1000
 
 	@staticmethod
@@ -255,8 +280,8 @@ class Diagram:
 		# Import static methods from class
 		dup = self.dup
 		self.diagram = svgwrite.Drawing(
-			filename = "diagram.svg",
-			size = (self.DIAGRAM_SIZE, self.DIAGRAM_SIZE)
+			filename="diagram.svg",
+			size=(self.DIAGRAM_SIZE, self.DIAGRAM_SIZE)
 		)
 		angle_slice = Diagram.FULL_CIRCLE / len(move_objs)
 		# Get a frange like array([0., 120., 240.])
@@ -276,7 +301,7 @@ class Diagram:
 				p = Point(DIAGRAM_RADIUS, self.DIAGRAM_SIZE - CIRCLE_RADIUS)
 			elif angle == WEST:
 				p = Point(CIRCLE_RADIUS, DIAGRAM_RADIUS)
-			else: # Otherwise, other angles
+			else:  # Otherwise, other angles
 				radians = math.radians(angle % EAST)
 				opposite = hypotenuse * math.sin(radians)
 				adjacent = hypotenuse * math.cos(radians)
@@ -350,7 +375,6 @@ class Diagram:
 			self.diagram.rect(
 				insert=(0, 0),
 				size=(dup(self.DIAGRAM_SIZE)),
-				#fill=gradient.get_paint_server(),
 			)
 		)
 		decorative.add(
@@ -364,12 +388,11 @@ class Diagram:
 		all_moves_g = self.diagram.g(id="moves")
 
 		# A circle for each move, with legend.
-		num_moves = len(move_points)
 		for i, point in enumerate(move_points):
 			the_move_obj = move_objs[i]
 			print(the_move_obj)
 
-			name = "for " + the_move_obj.move
+			name = "group-%d for %s" % (i, the_move_obj.move)
 			move_group = self.diagram.g(
 				id=name.replace(" ", "-"),
 			)
@@ -395,18 +418,18 @@ class Diagram:
 			move_group.add(
 				self.diagram.text(
 					text,
-					insert = (downshifted),
-					text_anchor = "middle",
-					textLength = text_length_px,
-					lengthAdjust = "spacingAndGlyphs",
+					insert=(downshifted),
+					text_anchor="middle",
+					textLength=text_length_px,
+					lengthAdjust="spacingAndGlyphs",
 				)
 			)
 
 			# All the various beat lines.
-			beats_lines = self.diagram.g(id="beats")
+			beats_lines = self.diagram.g(class_="beats")
 			for target in move_objs[i].beats_num:
-				line = ResizableLine(point, move_points[target]).resize(1/3)
-				line.resize(1/3, from_start=True, from_end=False)
+				line = ResizableLine(point, move_points[target]).resize(1 / 3)
+				line.resize(1 / 3, from_start=True, from_end=False)
 				beats_lines.add(
 					self.diagram.line(
 						start=line.start,
@@ -429,20 +452,22 @@ class ResizableLine:
 
 	def __init__(self, start, end):
 		self.start = Point(start)
-		self.end   = Point(end)
+		self.end = Point(end)
 		self._gen_vars()
+
 	def __repr__(self):
 		return "Line: " + str(self.dict)
+
 	def __iter__(self):
 		return iter(self.tuple)
 
 	def _gen_vars(self):
 		"Must be run every time the start or end of the line is modified."
 		# Generate some collections.
-		self.dict   = dict(start=self.start, end=self.end)
-		self.tuple  = (self.start, self.end) 
+		self.dict = dict(start=self.start, end=self.end)
+		self.tuple = (self.start, self.end) 
 		# The base & height of the triangle of the line.
-		self.base   = self.end.x - self.start.x
+		self.base = self.end.x - self.start.x
 		self.height = self.end.y - self.start.y
 		# Thank you, Pythagorus.
 		hypotenuse = sqrt((self.base ** 2) + (self.height ** 2))
@@ -469,5 +494,6 @@ class ResizableLine:
 			self.end = Point(start.x + base, start.y + height)
 		self._gen_vars()
 		return(self)
+
 
 main()
