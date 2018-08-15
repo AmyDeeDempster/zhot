@@ -29,6 +29,8 @@ Interpreter
 
 Python > 3.6
 
+(Tested on macOS and Korora Linux installations of CPython 3.6.5 and 3.7.0b4)
+
 Packages
 --------
 
