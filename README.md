@@ -13,10 +13,11 @@ In the game, type the name of the move you wish to play.
 This can be abbreviated.
 
 Other commands available include:
-* rules
-* score
-* rounds
-* exit
+* `rules` or `help`
+* `score`
+* `rounds`
+* `diagram`
+* `exit` or `quit`
 
 You can also just hit Return to quit the game.
 
