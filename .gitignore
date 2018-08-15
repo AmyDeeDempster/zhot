@@ -1,4 +1,4 @@
 .vscode
 .DS_Store
-diagram*svg
+diagram.sv*
 node_modules
