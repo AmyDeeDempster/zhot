@@ -2,3 +2,4 @@
 .DS_Store
 diagram.sv*
 node_modules
+__pycache__
