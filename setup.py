@@ -12,7 +12,7 @@ version = re.search(
 	re.M
 ).group(1)
 
-with open("README.rst", "rb") as f:
+with open("README.md", "rb") as f:
 	long_descr = f.read().decode("utf-8")
 
 setup(
@@ -24,5 +24,5 @@ setup(
 	long_description = long_descr,
 	author = "Amy Dee DEMPSTER",
 	author_email = "amy.dempster@student.rmit.edu.au",
-	url = "",
+	url = "https://github.com/AmyDeeDempster/zhot",
 )
