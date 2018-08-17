@@ -1,17 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""zhot.zhot: provides entry point main()."""
 
+import svgwrite
+from matplotlib.mlab import frange
+from math import (sqrt, radians, sin, cos)
+
+# Useful functions for all classes in this 
+def rounded(num):
+	DEC_PLACES = 2
+	return round(num, DEC_PLACES)
+
+def dup(single):
+	return (single, single)
 
 class Diagram:
 	"Class which generates data to output a vector diagram of the game rules."
 	FULL_CIRCLE = 360  # degrees
 	DIAGRAM_SIZE = 1000
 
-	@staticmethod
-	def dup(single):
-		return (single, single)
-
 	def __init__(self, move_objs):
 		# Import static methods from class
-		dup = self.dup
 		self.diagram = svgwrite.Drawing(
 			filename="diagram.svg",
 			size=(self.DIAGRAM_SIZE, self.DIAGRAM_SIZE)
@@ -35,9 +44,9 @@ class Diagram:
 			elif angle == WEST:
 				p = Point(CIRCLE_RADIUS, DIAGRAM_RADIUS)
 			else:  # Otherwise, other angles
-				radians = math.radians(angle % EAST)
-				opposite = hypotenuse * math.sin(radians)
-				adjacent = hypotenuse * math.cos(radians)
+				angle_rad = radians(angle % EAST)
+				opposite = hypotenuse * sin(angle_rad)
+				adjacent = hypotenuse * cos(angle_rad)
 				if angle < EAST:
 					p = Point(DIAGRAM_RADIUS + opposite, DIAGRAM_RADIUS - adjacent)
 				elif angle < SOUTH:
@@ -49,8 +58,8 @@ class Diagram:
 			move_points.append(p)
 		self.move_points = move_points
 
-		if len(move_points) > len(move_objs):
-			print("Slight error: I have data for too many circles in the diagram.")
+		# if len(move_points) > len(move_objs):
+		# 	print("Slight error: I have data for too many circles in the diagram.")
 
 		text_size = CIRCLE_RADIUS / 3
 		max_text_len = 12
@@ -123,7 +132,7 @@ class Diagram:
 		# A circle for each move, with legend.
 		for i, point in enumerate(move_points):
 			the_move_obj = move_objs[i]
-			print(the_move_obj)
+			#print(the_move_obj)
 
 			name = "group-%d for %s" % (i, the_move_obj.move)
 			move_group = self.diagram.g(

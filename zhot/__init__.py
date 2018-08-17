@@ -1,1 +1,1 @@
-# https://gehrcke.de/2014/02/distributing-a-python-command-line-application/
+#!/usr/bin/env python3

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""zhot.zhot: provides entry point main()."""
+__version__ = "0.1.0"
+
 import csv
 import random
 import sys
-import math
-import svgwrite
-from math import sqrt
-from matplotlib.mlab import frange
+# My classes
+from .diagram import *
 
 
 def main():
@@ -21,11 +23,6 @@ def main():
 		print(the_round.moves + the_round.outcome)
 		game.score.human += the_round.score.human
 		game.score.ai += the_round.score.ai
-
-
-def rounded(num):
-	DEC_PLACES = 2
-	return round(num, DEC_PLACES)
 
 
 class Score:
@@ -240,5 +237,3 @@ class DefaultGame(Game):
 		self.move_objs = [scissors, paper, rock]
 		self.complete_initialisation(move_names)
 		print("Starting game with default rules.")
-
-main()
