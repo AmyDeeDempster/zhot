@@ -108,7 +108,6 @@ class Round:
 			return AdminMove(quitting=False)
 		elif stdin in ("dia", "diagram"):
 			diagram = Diagram(game.move_objs)
-			print(diagram.move_points)
 			return AdminMove(quitting=True)
 		for candidate in game.move_objs:
 			if stdin.casefold() in candidate.move.casefold():
