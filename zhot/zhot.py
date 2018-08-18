@@ -5,6 +5,7 @@ __version__ = "0.1.1"
 import csv
 import random
 import sys
+import re
 # My classes
 from .diagram import *
 
@@ -94,19 +95,24 @@ class Round:
 	def get_human_move(game):
 		"Parse player input."
 		stdin = input().strip()
-		if not stdin or stdin in ("exit", "quit"):
+		command = re.search(r"\w+", stdin)
+		if command:
+			command = command[0]
+		if not command or command in ("exit", "quit"):
 			return AdminMove(quitting=True)
-		elif stdin in ("score", "points"):
+		elif command in ("score", "points"):
 			print(game.score)
 			return AdminMove(quitting=False)
-		elif stdin in ("rounds", "length"):
+		elif command in ("rounds", "length"):
 			print("{} rounds have been played so far.".format(game.rounds))
 			return AdminMove(quitting=False)
-		elif stdin in ("help", "moves", "rules", "?"):
+		elif command in ("help", "moves", "rules", "?"):
 			print(game.rules)
 			return AdminMove(quitting=False)
-		elif stdin in ("dia", "diagram"):
-			diagram = Diagram(game.move_objs)
+		elif command in ("dia", "diagram"):
+			arg = re.search(r"size\s*=\s*(\d+)", stdin)
+			size = int(arg[1]) if arg else None
+			diagram = Diagram(game.move_objs, size=size)
 			return AdminMove(quitting=True)
 		for candidate in game.move_objs:
 			if stdin.casefold() in candidate.move.casefold():

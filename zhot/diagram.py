@@ -5,7 +5,7 @@ import svgwrite
 from matplotlib.mlab import frange
 from math import (sqrt, radians, sin, cos)
 
-# Useful functions for all classes in this 
+# Useful functions for all classes in this
 def rounded(num):
 	DEC_PLACES = 2
 	return round(num, DEC_PLACES)
@@ -16,44 +16,49 @@ def dup(single):
 class Diagram:
 	"Class which generates data to output a vector diagram of the game rules."
 	FULL_CIRCLE = 360  # degrees
-	DIAGRAM_SIZE = 1000
+	DIAGRAM_VB = 1000
+	FILE_NAME = "diagram.svg"
 
-	def __init__(self, move_objs):
+	def __init__(self, move_objs, size=None):
 		# Import static methods from class
+		if size:
+			size = dup(size)
 		self.diagram = svgwrite.Drawing(
-			filename="diagram.svg",
-			size=(self.DIAGRAM_SIZE, self.DIAGRAM_SIZE)
+			filename=self.FILE_NAME,
+			size=size
 		)
+
+		self.diagram.viewbox(width=self.DIAGRAM_VB, height=self.DIAGRAM_VB)
 		angle_slice = Diagram.FULL_CIRCLE / len(move_objs)
 		# Get a frange like array([0., 120., 240.])
 		angles = frange(angle_slice, Diagram.FULL_CIRCLE, angle_slice)
-		DIAGRAM_RADIUS = round(self.DIAGRAM_SIZE / 2)
-		CIRCLE_RADIUS = round(DIAGRAM_RADIUS / len(move_objs))
+		DIAGRAM_VB_RADIUS = round(self.DIAGRAM_VB / 2)
+		CIRCLE_RADIUS = round(DIAGRAM_VB_RADIUS / len(move_objs))
 		NORTH, EAST, SOUTH, WEST = (0, 90, 180, 270)
 		move_points = list()
-		hypotenuse = DIAGRAM_RADIUS - CIRCLE_RADIUS
+		hypotenuse = DIAGRAM_VB_RADIUS - CIRCLE_RADIUS
 		for angle in angles:
 			# Cardinal points first
 			if angle == NORTH or angle == Diagram.FULL_CIRCLE:
-				p = Point(DIAGRAM_RADIUS, CIRCLE_RADIUS)
+				p = Point(DIAGRAM_VB_RADIUS, CIRCLE_RADIUS)
 			elif angle == EAST:
-				p = Point(self.DIAGRAM_SIZE - CIRCLE_RADIUS, DIAGRAM_RADIUS)
+				p = Point(self.DIAGRAM_VB - CIRCLE_RADIUS, DIAGRAM_VB_RADIUS)
 			elif angle == SOUTH:
-				p = Point(DIAGRAM_RADIUS, self.DIAGRAM_SIZE - CIRCLE_RADIUS)
+				p = Point(DIAGRAM_VB_RADIUS, self.DIAGRAM_VB - CIRCLE_RADIUS)
 			elif angle == WEST:
-				p = Point(CIRCLE_RADIUS, DIAGRAM_RADIUS)
+				p = Point(CIRCLE_RADIUS, DIAGRAM_VB_RADIUS)
 			else:  # Otherwise, other angles
 				angle_rad = radians(angle % EAST)
 				opposite = hypotenuse * sin(angle_rad)
 				adjacent = hypotenuse * cos(angle_rad)
 				if angle < EAST:
-					p = Point(DIAGRAM_RADIUS + opposite, DIAGRAM_RADIUS - adjacent)
+					p = Point(DIAGRAM_VB_RADIUS + opposite, DIAGRAM_VB_RADIUS - adjacent)
 				elif angle < SOUTH:
-					p = Point(DIAGRAM_RADIUS + adjacent, DIAGRAM_RADIUS + opposite)
+					p = Point(DIAGRAM_VB_RADIUS + adjacent, DIAGRAM_VB_RADIUS + opposite)
 				elif angle < WEST:
-					p = Point(DIAGRAM_RADIUS - opposite, DIAGRAM_RADIUS + adjacent)
+					p = Point(DIAGRAM_VB_RADIUS - opposite, DIAGRAM_VB_RADIUS + adjacent)
 				else:
-					p = Point(DIAGRAM_RADIUS - adjacent, DIAGRAM_RADIUS - opposite)
+					p = Point(DIAGRAM_VB_RADIUS - adjacent, DIAGRAM_VB_RADIUS - opposite)
 			move_points.append(p)
 		self.move_points = move_points
 
@@ -115,13 +120,13 @@ class Diagram:
 		decorative.add(
 			self.diagram.rect(
 				insert=(0, 0),
-				size=(dup(self.DIAGRAM_SIZE)),
+				size=(dup(self.DIAGRAM_VB)),
 			)
 		)
 		decorative.add(
 			self.diagram.circle(
-				center=(dup(DIAGRAM_RADIUS)),
-				r=DIAGRAM_RADIUS,
+				center=(dup(DIAGRAM_VB_RADIUS)),
+				r=DIAGRAM_VB_RADIUS,
 			)
 		)
 		self.diagram.add(decorative)
@@ -133,7 +138,7 @@ class Diagram:
 			the_move_obj = move_objs[i]
 			#print(the_move_obj)
 
-			name = "group-%d for %s" % (i, the_move_obj.move)
+			name = "%d-%s" % (i, the_move_obj.move)
 			move_group = self.diagram.g(
 				id=name.replace(" ", "-"),
 			)
@@ -183,6 +188,26 @@ class Diagram:
 
 		self.diagram.add(all_moves_g)
 		self.diagram.save()
+
+		# Now optimise.
+		try: 
+			from scour import scour
+			with open(self.FILE_NAME, "r") as file:
+				svg_string = file.read()
+				# Remove indentation in stylesheet.
+				svg_string = svg_string.replace("\t", "")
+				# Optimise with scour.
+				options = scour.parse_args([
+					"--no-line-breaks",
+					"--create-groups",
+					"--set-precision=2"
+				])
+				svg_string = scour.scourString(svg_string, options)
+			with open(self.FILE_NAME, "w") as file:
+				file.write(svg_string)
+		except:
+			print("Unable to optimise your diagram with scour.")
+
 
 
 class Point:
