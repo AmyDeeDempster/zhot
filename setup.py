@@ -16,7 +16,7 @@ with open("README.md", "rb") as f:
 	long_descr = f.read().decode("utf-8")
 
 setup(
-	name = "cli-zhot",
+	name = "zhot",
 	packages = ["zhot"],
 	entry_points = {"console_scripts": ['zhot = zhot.zhot:main']},
 	version = version,
