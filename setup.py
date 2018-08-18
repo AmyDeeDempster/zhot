@@ -27,6 +27,12 @@ setup(
 	packages = ["zhot"],
 	entry_points = {"console_scripts": ['zhot = zhot.zhot:main']},
 	version = version,
+	install_requires = [
+		'numpy',
+		'scour',
+		'svgwrite',
+		'csv',
+	],
 	description = "Command-line implementation of Zhot, an extensible Scissors-Paper-Stone game.",
 	long_description = LONG,
 	author = "Amy Dee DEMPSTER",
