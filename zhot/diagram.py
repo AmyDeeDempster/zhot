@@ -2,7 +2,7 @@
 """zhot.zhot: provides entry point main()."""
 
 import svgwrite
-from matplotlib.mlab import frange
+from numpy import arange
 from math import (sqrt, radians, sin, cos)
 
 # Useful functions for all classes in this
@@ -30,8 +30,8 @@ class Diagram:
 
 		self.diagram.viewbox(width=self.DIAGRAM_VB, height=self.DIAGRAM_VB)
 		angle_slice = Diagram.FULL_CIRCLE / len(move_objs)
-		# Get a frange like array([0., 120., 240.])
-		angles = frange(angle_slice, Diagram.FULL_CIRCLE, angle_slice)
+		# Get an arangerange like array([0., 120., 240.])
+		angles = arange(0, Diagram.FULL_CIRCLE, angle_slice)
 		DIAGRAM_VB_RADIUS = round(self.DIAGRAM_VB / 2)
 		CIRCLE_RADIUS = round(DIAGRAM_VB_RADIUS / len(move_objs))
 		NORTH, EAST, SOUTH, WEST = (0, 90, 180, 270)
