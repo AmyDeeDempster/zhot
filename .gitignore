@@ -7,3 +7,6 @@ __pycache__
 *egg-info
 dist
 zhot/*svg
+requirements.txt
+build
+dist

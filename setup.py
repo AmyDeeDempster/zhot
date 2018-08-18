@@ -31,7 +31,6 @@ setup(
 		'numpy',
 		'scour',
 		'svgwrite',
-		'csv',
 	],
 	description = "Command-line implementation of Zhot, an extensible Scissors-Paper-Stone game.",
 	long_description = LONG,
