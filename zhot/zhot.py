@@ -7,12 +7,12 @@ import random
 import sys
 import re
 # My classes
-from .diagram import *
+from .diagram import Diagram
 
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
-	try: 
+	try:
 		game = Game(sys.argv[1])
 	except IndexError:
 		game = DefaultGame()
