@@ -1,9 +1,8 @@
 .vscode
 .DS_Store
-diagram.*
+/diagram*
 node_modules
 __pycache__
 *egg-info
 dist
-zhot/diagram*
 zhot/*svg
