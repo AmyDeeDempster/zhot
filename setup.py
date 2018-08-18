@@ -2,6 +2,7 @@
 """setup.py: setuptools control."""
 
 import re
+from os import listdir
 from setuptools import setup
 
 
@@ -11,8 +12,15 @@ version = re.search(
 	re.M
 ).group(1)
 
-with open("README.md", "rb") as f:
-	long_descr = f.read().decode("utf-8")
+# Find the documentation, no matter the language I wrote it in.
+try:
+	README = [fn for fn in listdir() if "README" in fn]
+	with open(README[0], "rb") as f:
+		LONG = f.read().decode("utf-8")
+except:
+	MESSAGE = "Couldn’t find documentation."
+	print(MESSAGE)
+	LONG = MESSAGE
 
 setup(
 	name = "zhot",
@@ -20,7 +28,7 @@ setup(
 	entry_points = {"console_scripts": ['zhot = zhot.zhot:main']},
 	version = version,
 	description = "Command-line implementation of Zhot, an extensible Scissors-Paper-Stone game.",
-	long_description = long_descr,
+	long_description = LONG,
 	author = "Amy Dee DEMPSTER",
 	author_email = "amy.dempster@student.rmit.edu.au",
 	url = "https://github.com/AmyDeeDempster/zhot",

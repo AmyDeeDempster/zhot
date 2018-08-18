@@ -1,6 +1,7 @@
 .vscode
 .DS_Store
 /diagram*
+package-lock.json
 node_modules
 __pycache__
 *egg-info
