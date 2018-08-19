@@ -23,6 +23,7 @@ setup(
 	packages = ["zhot"],
 	entry_points = {"console_scripts": ['zhot = zhot.zhot:main']},
 	version = __version__,
+	python_requires = '>3.6',
 	install_requires = [
 		'numpy',
 		'scour',
