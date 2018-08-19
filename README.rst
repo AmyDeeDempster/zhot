@@ -1,3 +1,5 @@
+.. image:: http://img.shields.io/:version-0.1.4-green.svg
+
 Zhot
 ======
 
@@ -14,6 +16,8 @@ Supply a Comma-Separated Values file as a command-line argument for this
 script. For example:
 
 ``zhot moves/moves-5.csv``
+
+If not supplied, a default set of three-move rules will be used.
 
 In the game, type the name of the move you wish to play. This can be
 abbreviated.
