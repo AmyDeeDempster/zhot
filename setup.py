@@ -4,13 +4,9 @@
 import re
 from os import listdir
 from setuptools import setup
+from zhot.zhot import __version__
 
-
-version = re.search(
-	r'^__version__\s*=\s*"(.*)"',
-	open('zhot/zhot.py').read(),
-	re.M
-).group(1)
+print(__version__)
 
 # Find the documentation, no matter the language I wrote it in.
 try:
@@ -26,7 +22,7 @@ setup(
 	name = "zhot",
 	packages = ["zhot"],
 	entry_points = {"console_scripts": ['zhot = zhot.zhot:main']},
-	version = version,
+	version = __version__,
 	install_requires = [
 		'numpy',
 		'scour',

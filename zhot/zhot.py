@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """zhot.zhot: provides entry point main()."""
-__version__ = "0.1.4"
 
 import csv
 import random
@@ -8,7 +7,9 @@ import sys
 import re
 # My classes
 from .diagram import Diagram
+from .__init__ import get_version
 
+__version__ = get_version()
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
@@ -58,6 +59,7 @@ class Round:
 	"""Object that deals with a single round of the game"""
 
 	def __init__(self, game):
+		print(__version__)
 		print("Options: %s." % game.move_names)
 		print("What is your move?", end=" ")
 
@@ -223,7 +225,8 @@ class Game():
 		self.move_names = ", ".join(move_names)
 
 		# Build a string with game rules.
-		self.rules = "\nRules of the game:\n"
+		self.rules = "\nVersion {}\n".format(__version__)
+		self.rules += "Rules of the game:\n"
 		for obj in self.move_objs:
 			for loser, verb in obj.beats.items():
 				self.rules += (" ".join((obj.move, verb, loser)) + ".\n")
