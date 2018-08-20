@@ -113,7 +113,19 @@ class Round:
 		elif command in ("dia", "diagram"):
 			arg = re.search(r"size\s*=\s*(\d+)", stdin)
 			size = int(arg[1]) if arg else None
-			diagram = Diagram(game.move_objs, size=size)
+			arg = re.search(r"hue1\s*=\s*(\w+)\b", stdin)
+			hue1 = arg[1] if arg else None
+			arg = re.search(r"hue2\s*=\s*(\w+)\b", stdin)
+			hue2 = arg[1] if arg else None
+			arg = re.search(r"out\s*=\s*([\w\.\/]+)\b", stdin)
+			out = arg[1] if arg else None
+			Diagram.create(
+				game.move_objs,
+				size=size,
+				hue1=hue1,
+				hue2=hue2,
+				out=out,
+			)
 			return AdminMove(quitting=True)
 		for candidate in game.move_objs:
 			if stdin.casefold() in candidate.move.casefold():

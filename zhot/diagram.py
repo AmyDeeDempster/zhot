@@ -9,7 +9,9 @@ the svgwrite package is installed first.  This package is listed
 as a dependency of Zhot, but due to a packaging error, this seems not
 to be enforced.	""")
 from numpy import arange
+import os
 from math import (sqrt, radians, sin, cos)
+import pkg_resources
 
 
 # Useful functions for all classes in this file.
@@ -26,14 +28,21 @@ class Diagram:
 	"Class which generates data to output a vector diagram of the game rules."
 	FULL_CIRCLE = 360  # degrees
 	DIAGRAM_VB = 1000
-	FILE_NAME = "diagram.svg"
+	DEF_OUT = "diagram.svg"
 
-	def __init__(self, move_objs, size=None):
+	@classmethod
+	def create(self, move_objs, size, hue1, hue2, out):
 		# Import static methods from class
 		if size:
 			size = dup(size)
+		if not hue1:
+			hue1 = "white"
+		if not hue2:
+			hue2 = "silver"
+		if not out:
+			out = self.DEF_OUT
 		self.diagram = svgwrite.Drawing(
-			filename=self.FILE_NAME,
+			filename=out,
 			size=size
 		)
 
@@ -77,38 +86,18 @@ class Diagram:
 		text_size = CIRCLE_RADIUS / 3
 		max_text_len = 12
 
-		# Put as much styling as possible here
-		style_sheet = self.diagram.style(
-"""
-		g#decorative rect {
-			stroke-width: 5px;
-			stroke: darkGrey;
-			fill: silver;
-		}
-		circle {
-			stroke: none;
-			fill: url(#radgrad);
-		}
-		g#moves text {
-			font-size: %spx;
-		}
-		g#moves g line {
-			stroke-width: 8px;
-			stroke-linecap: round;
-			stroke: black;
-			marker-end: url(#head);
-		}
-		marker polygon {
-			fill: #500;
-		}
-""" % round(text_size)
+
+		style = pkg_resources.resource_stream(__name__, "diagram.css")
+		style = style.read().decode("utf-8")
+		style = style.replace("$TEXTSIZE", str(round(text_size)))
+		self.diagram.defs.add(
+			self.diagram.style(style)
 		)
-		self.diagram.defs.add(style_sheet)
 
 		gradient = self.diagram.defs.add(
 			self.diagram.radialGradient(id="radgrad")
 		)
-		gradient.add_stop_color('0%', 'white').add_stop_color('100%', 'silver')
+		gradient.add_stop_color('0%', hue1).add_stop_color('100%', hue2)
 
 		arrowhead = self.diagram.marker(
 			insert=(1.5, 2),
