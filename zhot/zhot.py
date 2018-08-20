@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """zhot.zhot: provides entry point main()."""
+__version__ = "0.1.7"
 
 import csv
 import random
@@ -7,9 +8,7 @@ import sys
 import re
 # My classes
 from .diagram import Diagram
-from .__init__ import get_version
 
-__version__ = get_version()
 
 def main():
 	"An extension to the classic game of Scissors-Paper-Stone, Roshambo, or Zhot."
@@ -98,8 +97,9 @@ class Round:
 		"Parse player input."
 		stdin = input().strip()
 		command = re.search(r"\w+", stdin)
-		if command:
-			command = command[0]
+		# Turn match object into string (P3.5-compatible)
+		if command and command.group(0):
+			command = command.group(0)
 		if not command or command in ("exit", "quit"):
 			return AdminMove(quitting=True)
 		elif command in ("score", "points"):

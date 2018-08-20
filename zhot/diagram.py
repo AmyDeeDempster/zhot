@@ -5,6 +5,7 @@ import svgwrite
 from numpy import arange
 from math import (sqrt, radians, sin, cos)
 
+
 # Useful functions for all classes in this
 def rounded(num):
 	DEC_PLACES = 2

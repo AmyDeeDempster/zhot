@@ -6,7 +6,6 @@ from os import listdir
 from setuptools import setup
 from zhot.zhot import __version__
 
-print(__version__)
 
 # Find the documentation, no matter the language I wrote it in.
 try:
@@ -26,8 +25,8 @@ setup(
 	python_requires = '>3.6',
 	install_requires = [
 		'numpy',
-		'scour',
 		'svgwrite',
+		'scour'
 	],
 	description = "Command-line implementation of Zhot, an extensible Scissors-Paper-Stone game.",
 	long_description = LONG,

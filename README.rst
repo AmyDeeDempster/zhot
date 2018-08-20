@@ -1,4 +1,4 @@
-.. image:: http://img.shields.io/:version-0.1.5-green.svg
+.. image:: http://img.shields.io/:version-0.1.7-green.svg
 
 Zhot
 ======
@@ -12,12 +12,16 @@ and object-oriented manner.
 Usage
 ------
 
+### Establishing game rules
+
 Supply a Comma-Separated Values file as a command-line argument for this
 script. For example:
 
 ``zhot moves/moves-5.csv``
 
 If not supplied, a default set of three-move rules will be used.
+
+### Gameplay and user input
 
 In the game, type the name of the move you wish to play. This can be
 abbreviated.
@@ -32,15 +36,28 @@ Other commands available include:
 
 You can also just hit Return to quit the game.
 
+### Rule diagram
+
+The ``diagram`` command generates, from the rules of the current game
+a vector diagram illustrating those rules.
+
 Dependencies
 ------------
+
+### Built-in
 
 -  csv
 -  random
 -  sys
+-  re
 -  math
+
+### Third-party (pyPI)
+
+-  numpy
 -  svgwrite
--  matplotlib.mlab
+-  score
+
 
 Interpreter
 -----------
