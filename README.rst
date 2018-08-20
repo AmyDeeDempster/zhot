@@ -1,4 +1,4 @@
-.. image:: http://img.shields.io/:version-0.1.7-green.svg
+.. image:: http://img.shields.io/:version-0.1.8-green.svg
 
 Zhot
 ======
@@ -56,7 +56,7 @@ Dependencies
 
 -  numpy
 -  svgwrite
--  score
+-  scour
 
 
 Interpreter

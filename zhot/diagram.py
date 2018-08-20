@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 """zhot.zhot: provides entry point main()."""
 
-import svgwrite
+try:
+	import svgwrite
+except ImportError as e:
+	print("""The diagram-generating feature of Zhot will not work unless
+the svgwrite package is installed first.  This package is listed
+as a dependency of Zhot, but due to a packaging error, this seems not
+to be enforced.	""")
 from numpy import arange
 from math import (sqrt, radians, sin, cos)
 
 
-# Useful functions for all classes in this
+# Useful functions for all classes in this file.
 def rounded(num):
-	DEC_PLACES = 2
+	"""Rounds numbers to a generous number of decimal points,
+	since scour will go further if necessary."""
+	DEC_PLACES = 5
 	return round(num, DEC_PLACES)
 
 def dup(single):
@@ -210,9 +218,7 @@ class Diagram:
 			print("Unable to optimise your diagram with scour.")
 
 
-
 class Point:
-
 	def __init__(self, x, y=0):
 		# See if the argument is already a Point or collection.
 		if type(x) == Point:

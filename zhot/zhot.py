@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """zhot.zhot: provides entry point main()."""
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 import csv
 import random
@@ -58,7 +58,6 @@ class Round:
 	"""Object that deals with a single round of the game"""
 
 	def __init__(self, game):
-		print(__version__)
 		print("Options: %s." % game.move_names)
 		print("What is your move?", end=" ")
 

@@ -3,7 +3,7 @@
 
 import re
 from os import listdir
-from setuptools import setup
+from setuptools import setup, find_packages
 from zhot.zhot import __version__
 
 
@@ -19,12 +19,13 @@ except:
 
 setup(
 	name = "zhot",
-	packages = ["zhot"],
+	packages = find_packages(),
 	entry_points = {"console_scripts": ['zhot = zhot.zhot:main']},
 	version = __version__,
-	python_requires = '>3.6',
+	python_requires = '>3.5',
 	install_requires = [
 		'numpy',
+		'pyparsing',
 		'svgwrite',
 		'scour'
 	],
