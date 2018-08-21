@@ -1,24 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="700" height="700" baseProfile="full" version="1.1" viewBox="0 0 1e3 1e3" xmlns="http://www.w3.org/2000/svg"><defs><style type="text/css"><![CDATA[
-g#decorative rect {
-stroke-width: 5px;
-stroke: darkGrey;
-fill: silver;
+<svg baseProfile="full" version="1.1" viewBox="0 0 1e3 1e3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css"><![CDATA[g#decorative rect {
+	stroke-width: 5px;
+	stroke: darkGrey;
+	fill: silver;
 }
 circle {
-stroke: none;
-fill: url(#radgrad);
+	stroke: none;
+	fill: url(#radgrad);
 }
 g#moves text {
-font-size: 24px;
+	font-size: 19px;
 }
-g#moves g line {
-stroke-width: 8px;
-stroke-linecap: round;
-stroke: black;
-marker-end: url(#head);
+g#moves g line, g#moves g path {
+	stroke-width: 6px;
+	stroke-linecap: round;
+	stroke: black;
+	marker-end: url(#head);
+	filter: drop-shadow(-3px -3px 3px grey);
 }
 marker polygon {
-fill: #500;
-}
-]]></style><radialGradient id="radgrad"><stop stop-color="#fff" offset="0"/><stop stop-color="silver" offset="1"/></radialGradient><marker id="head" markerHeight="4" markerWidth="4" orient="auto" refX="1.5" refY="2"><polygon points="0 0 4 2 0 4 1 2"/></marker></defs><g id="decorative"><rect width="1e3" height="1e3"/><circle cx="500" cy="500" r="500"/></g><g id="moves"><g id="0-Scissors"><circle cx="835" cy="233" r="71"/><text x="835.41" y="238.44" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="89.93">Scissors</text><g class="beats"><line x1="854" x2="891" y1="313" y2="474"/><line x1="720" x2="488" y1="378" y2="669"/><line x1="686" x2="388" y1="233" y2="233"/></g></g><g id="1-Paper"><circle cx="918" cy="595" r="71"/><text x="918.24" y="601.38" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="56.21">Paper</text><g class="beats"><line x1="867" x2="764" y1="660" y2="790"/><line x1="732" x2="361" y1="595" y2="595"/><line x1="825" x2="639" y1="479" y2="246"/></g></g><g id="2-Stone"><circle cx="686" cy="887" r="71"/><text x="686.14" y="892.44" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="56.21">Stone</text><g class="beats"><line x1="603" x2="438" y1="887" y2="887"/><line x1="570" x2="338" y1="741" y2="451"/><line x1="719" x2="786" y1="741" y2="451"/></g></g><g id="3-Tablet"><circle cx="314" cy="887" r="71"/><text x="313.86" y="892.44" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="67.45">Tablet</text><g class="beats"><line x1="262" x2="159" y1="822" y2="692"/><line x1="355" x2="438" y1="705" y2="343"/><line x1="448" x2="717" y1="822" y2="692"/></g></g><g id="4-Phone"><circle cx="82" cy="595" r="71"/><text x="81.76" y="601.38" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="56.21">Phone</text><g class="beats"><line x1="100" x2="137" y1="515" y2="354"/><line x1="249" x2="584" y1="515" y2="354"/><line x1="216" x2="485" y1="660" y2="790"/></g></g><g id="5-Jedi"><circle cx="165" cy="233" r="71"/><text x="164.59" y="238.44" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="44.97">Jedi</text><g class="beats"><line x1="239" x2="388" y1="197" y2="125"/><line x1="332" x2="667" y1="313" y2="474"/><line x1="198" x2="264" y1="378" y2="669"/></g></g><g id="6-Clone"><circle cx="500" cy="71" r="71"/><text x="500" y="76.92" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="56.21">Clone</text><g class="beats"><line x1="575" x2="724" y1="107" y2="179"/><line x1="541" x2="624" y1="252" y2="615"/><line x1="407" x2="221" y1="188" y2="421"/></g></g></g></svg>
+	fill: #500;
+}]]></style>
+  <radialGradient id="radgrad">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-color="silver" offset="1"/>
+  </radialGradient>
+  <marker id="head" markerHeight="4" markerWidth="4" orient="auto" refX="1.5" refY="2">
+   <polygon points="0 0 4 2 0 4 1 2"/>
+  </marker>
+ </defs>
+ <g id="decorative">
+  <rect width="1e3" height="1e3"/>
+  <circle cx="500" cy="500" r="500"/>
+ </g>
+ <g id="moves">
+  <g id="0-Scissors">
+   <circle cx="500" cy="56" r="56"/>
+   <text x="500" y="60.6667" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="70.9333">Scissors</text>
+   <g class="beats">
+    <path id="0-to-Paper" d="m557 77 159 57"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#0-to-Paper">cuts<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31383135355492"/></textPath></text>
+    <path id="0-to-Lizard" d="m530 109 318 549"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#0-to-Lizard">decapitates<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6304946748935"/></textPath></text>
+    <path id="0-to-Wizard" d="m489 116-129 729"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#0-to-Wizard">lacerates<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1092190278742"/></textPath></text>
+    <path id="0-to-Spider-man" d="m452 95-334 281"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#0-to-Spider-man">snips the webs of<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.3954503372486"/></textPath></text>
+   </g>
+  </g>
+  <g id="1-Paper">
+   <circle cx="785.4" cy="159.88" r="56"/>
+   <text x="785.3977" y="164.543" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="44.3333">Paper</text>
+   <g class="beats">
+    <path id="1-to-Stone" d="m816 213 84 146"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#1-to-Stone">wraps<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.3137549569142"/></textPath></text>
+    <path id="1-to-Spock" d="m774 220-110 625"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#1-to-Spock">disproves<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6304760466913"/></textPath></text>
+    <path id="1-to-Batman" d="m738 199-567 476"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#1-to-Batman">delays<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1093717218422"/></textPath></text>
+    <path id="1-to-Glock" d="m723 159h-436"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#1-to-Glock">jams<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.39539999999994"/></textPath></text>
+   </g>
+  </g>
+  <g id="2-Stone">
+   <circle cx="937.25" cy="422.9" r="56"/>
+   <text x="937.2546" y="427.5669" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="44.3333">Stone</text>
+   <g class="beats">
+    <path id="2-to-Lizard" d="m926 483-29 167"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#2-to-Lizard">crushes<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31385050125115"/></textPath></text>
+    <path id="2-to-Wizard" d="m890 462-487 408"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#2-to-Wizard">interrupts<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6305745993727"/></textPath></text>
+    <path id="2-to-Spider-man" d="m875 422h-740"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#2-to-Spider-man">knocks out<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1092"/></textPath></text>
+    <path id="2-to-Scissors" d="m890 383-335-281"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#2-to-Scissors">blunts<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.3954503372486"/></textPath></text>
+   </g>
+  </g>
+  <g id="3-Lizard">
+   <circle cx="884.52" cy="722" r="56"/>
+   <text x="884.5153" y="726.6667" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="53.2">Lizard</text>
+   <g class="beats">
+    <path id="3-to-Spock" d="m837 761-130 109"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#3-to-Spock">poisons<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31401261212844"/></textPath></text>
+    <path id="3-to-Batman" d="m822 722h-634"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#3-to-Batman">confuses<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6306"/></textPath></text>
+    <path id="3-to-Glock" d="m837 682-567-476"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#3-to-Glock">is too small for<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1093717218422"/></textPath></text>
+    <path id="3-to-Paper" d="m873 661-75-430"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#3-to-Paper">eats<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.39533372704614"/></textPath></text>
+   </g>
+  </g>
+  <g id="4-Spock">
+   <circle cx="651.86" cy="917.22" r="56"/>
+   <text x="651.8569" y="921.8902" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="44.3333">Spock</text>
+   <g class="beats">
+    <path id="4-to-Wizard" d="m590 917h-170"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#4-to-Wizard">zaps<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31379999999996"/></textPath></text>
+    <path id="4-to-Spider-man" d="m604 877-486-408"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#4-to-Spider-man">befuddles<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6305745993727"/></textPath></text>
+    <path id="4-to-Scissors" d="m641 856-129-729"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#4-to-Scissors">smashes<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1092190278742"/></textPath></text>
+    <path id="4-to-Stone" d="m682 863 218-378"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#4-to-Stone">vaporises<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.39531123701363"/></textPath></text>
+   </g>
+  </g>
+  <g id="5-Wizard">
+   <circle cx="348.14" cy="917.22" r="56"/>
+   <text x="348.1431" y="921.8902" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="53.2">Wizard</text>
+   <g class="beats">
+    <path id="5-to-Batman" d="m300 877-129-109"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#5-to-Batman">stuns<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31401261212844"/></textPath></text>
+    <path id="5-to-Glock" d="m337 856-110-625"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#5-to-Glock">melts<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6304760466913"/></textPath></text>
+    <path id="5-to-Paper" d="m378 863 370-641"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#5-to-Paper">burns<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1091404394692"/></textPath></text>
+    <path id="5-to-Lizard" d="m406 896 410-150"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#5-to-Lizard">transforms<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.3952994453194"/></textPath></text>
+   </g>
+  </g>
+  <g id="6-Batman">
+   <circle cx="115.48" cy="722" r="56"/>
+   <text x="115.4847" y="726.6667" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="53.2">Batman</text>
+   <g class="beats">
+    <path id="6-to-Spider-man" d="m104 661-29-167"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#6-to-Spider-man">scares<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.313850501251"/></textPath></text>
+    <path id="6-to-Scissors" d="m146 668 317-549"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#6-to-Scissors">dismantles<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6304946748935"/></textPath></text>
+    <path id="6-to-Stone" d="m173 700 695-253"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#6-to-Stone">explodes<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1091991387286"/></textPath></text>
+    <path id="6-to-Spock" d="m173 743 410 149"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#6-to-Spock">hangs<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.3952994453194"/></textPath></text>
+   </g>
+  </g>
+  <g id="7-Spider-man">
+   <circle cx="62.745" cy="422.9" r="56"/>
+   <text x="62.7454" y="427.5669" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="88.6667">Spider-man</text>
+   <g class="beats">
+    <path id="7-to-Glock" d="m93 369 85-147"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#7-to-Glock">disarms<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31375495691424"/></textPath></text>
+    <path id="7-to-Paper" d="m120 401 596-217"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#7-to-Paper">rips<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6304373401106"/></textPath></text>
+    <path id="7-to-Lizard" d="m120 443 696 254"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#7-to-Lizard">defeats<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1091991387285"/></textPath></text>
+    <path id="7-to-Wizard" d="m93 476 218 378"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#7-to-Wizard">annoys<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.3953112370136"/></textPath></text>
+   </g>
+  </g>
+  <g id="8-Glock">
+   <circle cx="214.6" cy="159.88" r="56"/>
+   <text x="214.6023" y="164.543" text-anchor="middle" lengthAdjust="spacingAndGlyphs" textLength="44.3333">Glock</text>
+   <g class="beats">
+    <path id="8-to-Scissors" d="m272 138 159-58"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#8-to-Scissors">dents<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;169.31383135355483"/></textPath></text>
+    <path id="8-to-Stone" d="m272 180 596 218"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#8-to-Stone">breaks<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;634.6304373401106"/></textPath></text>
+    <path id="8-to-Spock" d="m245 213 370 641"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#8-to-Spock">shoots<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;740.1091404394692"/></textPath></text>
+    <path id="8-to-Batman" d="m203 220-75 430"/>
+    <text dy="-10"><textPath startOffset="10" spacing="auto" xlink:href="#8-to-Batman">kills the mum of<animate attributeName="startOffset" dur="7s" repeatCount="indefinite" values="-50;436.3953337270462"/></textPath></text>
+   </g>
+  </g>
+ </g>
+</svg>

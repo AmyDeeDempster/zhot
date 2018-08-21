@@ -34,4 +34,5 @@ setup(
 	author = "Amy Dee DEMPSTER",
 	author_email = "amy.dempster@student.rmit.edu.au",
 	url = "https://github.com/AmyDeeDempster/zhot",
+	include_package_data = True
 )
