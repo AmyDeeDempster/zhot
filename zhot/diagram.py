@@ -18,7 +18,7 @@ import pkg_resources
 def rounded(num):
 	"""Rounds numbers to a generous number of decimal points,
 	since scour will go further if necessary."""
-	DEC_PLACES = 5
+	DEC_PLACES = 4
 	return round(num, DEC_PLACES)
 
 def dup(single):
@@ -48,7 +48,7 @@ class Diagram:
 
 		self.diagram.viewbox(width=self.DIAGRAM_VB, height=self.DIAGRAM_VB)
 		angle_slice = Diagram.FULL_CIRCLE / len(move_objs)
-		# Get an arangerange like array([0., 120., 240.])
+		# Get an arange like array([0., 120., 240.])
 		angles = arange(0, Diagram.FULL_CIRCLE, angle_slice)
 		DIAGRAM_VB_RADIUS = round(self.DIAGRAM_VB / 2)
 		CIRCLE_RADIUS = round(DIAGRAM_VB_RADIUS / len(move_objs))
@@ -172,8 +172,11 @@ class Diagram:
 			# All the various beat lines.
 			beats_lines = self.diagram.g(class_="beats")
 			for target in move_objs[i].beats_num:
-				line = ResizableLine(point, move_points[target]).resize(1 / 3)
-				line.resize(1 / 3, from_start=True, from_end=False)
+				line = ResizableLine(
+					point, move_points[target]
+				).resize(CIRCLE_RADIUS * 2.2, proportional=False)
+				# Take a bit more off the end for the arrow.
+				line.resize(CIRCLE_RADIUS / 5, proportional=False, from_start=False)
 				beats_lines.add(
 					self.diagram.line(
 						start=line.start,
@@ -259,7 +262,7 @@ class ResizableLine:
 		hypotenuse = sqrt((self.base ** 2) + (self.height ** 2))
 		self.length = hypotenuse
 
-	def resize(self, chop, proportional=True, from_start=False, from_end=True):
+	def resize(self, chop, proportional=True, from_start=True, from_end=True):
 		"""
 			Recalculates a new line length, and then (using this as the hypotenuse)
 			recalculates the base and height of the triangle of a line.
@@ -269,15 +272,17 @@ class ResizableLine:
 			chop = chop / self.length
 		# Divide the resizing between the start and end of the line.		
 		if from_start and from_end:
-			chop / 2
+			chop /= 2
 		# New base & height.
 		base, height = [n * (1 - chop) for n in (self.base, self.height)]
-		# Actually calc the new start/end points.
+		# Actually calculate the new start/end points.
 		start, end = (self.start, self.end)
 		if from_start:
 			self.start = Point(end.x - base, end.y - height)
 		if from_end:
 			self.end = Point(start.x + base, start.y + height)
+		# Refresh the instance variables. 
 		self._gen_vars()
+		# We’ve altered the instance in place, but also want to be able to chain.
 		return(self)
 

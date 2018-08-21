@@ -11,10 +11,11 @@ g#moves text {
 	font-size: $TEXTSIZEpx;
 }
 g#moves g line {
-	stroke-width: 8px;
+	stroke-width: 6px;
 	stroke-linecap: round;
 	stroke: black;
 	marker-end: url(#head);
+	filter: drop-shadow(-5px -5px 5px grey);
 }
 marker polygon {
 	fill: #500;
