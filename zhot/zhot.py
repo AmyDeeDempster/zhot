@@ -192,7 +192,7 @@ class InsufficientMovesError(ValueError):
 	pass
 
 
-class Game():
+class Game:
 	"Object that contains a list of Move objects and strings with info on the game."
 
 	def __init__(self, filename):

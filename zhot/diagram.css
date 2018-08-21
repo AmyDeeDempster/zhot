@@ -10,7 +10,7 @@ circle {
 g#moves text {
 	font-size: $TEXTSIZEpx;
 }
-g#moves g line {
+g#moves g line, g#moves g path {
 	stroke-width: 6px;
 	stroke-linecap: round;
 	stroke: black;
