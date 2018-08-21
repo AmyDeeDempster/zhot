@@ -38,8 +38,9 @@ You can also just hit Return to quit the game.
 
 ### Rule diagram
 
-The ``diagram`` command generates, from the rules of the current game
+The ``diagram`` command generates, from the rules of the current game,
 a vector diagram illustrating those rules.
+It’s pretty fancy.
 
 Dependencies
 ------------
@@ -56,13 +57,13 @@ Dependencies
 
 -  numpy
 -  svgwrite
--  scour
+-  scour (optional)
 
 
 Interpreter
 -----------
 
-Python > 3.6
+Python > 3.5
 
 (Tested on macOS and Korora Linux installations of CPython 3.6.5 and
 3.7.0b4)
