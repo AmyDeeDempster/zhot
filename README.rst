@@ -1,4 +1,4 @@
-.. image:: http://img.shields.io/:version-0.2.0-green.svg
+.. image:: http://img.shields.io/:version-0.2.1-green.svg
 
 Zhot
 ======

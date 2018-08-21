@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """zhot.zhot: provides entry point main()."""
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 import csv
 import random
