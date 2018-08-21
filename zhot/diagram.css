@@ -15,7 +15,7 @@ g#moves g line {
 	stroke-linecap: round;
 	stroke: black;
 	marker-end: url(#head);
-	filter: drop-shadow(-5px -5px 5px grey);
+	filter: drop-shadow(-3px -3px 3px grey);
 }
 marker polygon {
 	fill: #500;
