@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """zhot.zhot: provides entry point main()."""
-__version__ = "0.1.8"
+__version__ = "0.2.0"
 
 import csv
 import random
@@ -161,7 +161,7 @@ class Move:
 			self.beats[loser] = verb
 		self.num = number
 		self.beats_num = [
-			# All the odd-numbered indices (our of all the Move objects),
+			# All the odd-numbered indices (out of all the Move objects),
 			# shifted forward by the number of the current move,
 			# then made to modulo-wrap, so as to yield e.g. [3, 5, 1]
 			(i + number) % total for i in range(total) if i % 2 != 0
